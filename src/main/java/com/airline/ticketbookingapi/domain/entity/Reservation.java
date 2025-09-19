@@ -34,10 +34,10 @@ public class Reservation implements Serializable {
     LocalDateTime createdDate;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_user", nullable = false)
+    @JoinColumn(name = "id_user", nullable = false, foreignKey = @ForeignKey(name = "fk_reservation_to_user"))
     User user;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_ticket", nullable = false)
+    @JoinColumn(name = "id_ticket", nullable = false, foreignKey = @ForeignKey(name = "fk_reservation_to_ticket"))
     Ticket ticket;
 }
