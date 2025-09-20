@@ -34,7 +34,7 @@ public class Flight implements Serializable {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "flight")
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     List<Ticket> tickets;
 
 }

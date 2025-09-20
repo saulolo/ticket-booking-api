@@ -7,15 +7,14 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User implements Serializable {
@@ -35,7 +34,7 @@ public class User implements Serializable {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     List<Reservation> reservations;
 
 }
