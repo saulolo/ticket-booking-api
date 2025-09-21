@@ -24,11 +24,22 @@ public class Flight implements Serializable {
     @Column(name = "id_flight")
     Long idFlight;
 
-    @Column(name = "name", nullable = false, length = 30)
-    String name;
+    @Column(name = "flight_number", nullable = false, length = 30)
+    String flightNumber;
 
-    @Column(name = "description", nullable = false, length = 100)
-    String description;
+    @Column(name = "origin", nullable = false, length = 100)
+    String origin;
+
+    @Column(name = "destination", nullable = false, length = 100)
+    String destination;
+
+    @Column(name = "departure_time", nullable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    LocalDateTime departureTime;
+
+    @Column(name = "arrival_time", nullable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    LocalDateTime arrivalTime;
 
     @Column(name = "created_date", nullable = false)
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")

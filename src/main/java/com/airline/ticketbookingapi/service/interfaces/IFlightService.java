@@ -1,13 +1,11 @@
-package com.airline.ticketbookingapi.repository;
+package com.airline.ticketbookingapi.service.interfaces;
 
 import com.airline.ticketbookingapi.domain.entity.Flight;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public interface FlightRepository extends JpaRepository<Flight, Long> {
+public interface IFlightService {
+
 
     /**
      * Busca una lista de vuelos por su origen y destino.
@@ -15,5 +13,5 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
      * @param destination El punto de llegada del vuelo.
      * @return Una lista de vuelos que coinciden con el origen y destino especificados.
      */
-    List<Flight> findByOriginAndDestination(String origin, String destination);
+    List<Flight> findFlightsByOriginAndDestination(String origin, String destination);
 }
