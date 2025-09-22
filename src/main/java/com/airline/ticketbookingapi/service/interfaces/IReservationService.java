@@ -19,4 +19,11 @@ public interface IReservationService {
      * @return La entidad de la reserva actualizada.
      */
     Reservation updateReservation(ReservationUpdateRequestDTO reservationUpdateRequestDTO);
+
+    /**
+     * Cancela una reserva por su ID.
+     * @param idReservation El ID de la reserva a cancelar.
+     * @return La entidad de la reserva cancelada.
+     */
+    Reservation cancelReservation(Long idReservation);
 }

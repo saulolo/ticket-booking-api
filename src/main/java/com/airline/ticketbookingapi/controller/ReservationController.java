@@ -50,4 +50,18 @@ public class ReservationController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
+
+    /**
+     * Cancela una reserva por su ID.
+     *
+     * @param idReservation El ID de la reserva a cancelar.
+     * @return La entidad de la reserva cancelada.
+     */
+    @DeleteMapping("/delete/{idReservation}")
+    public ResponseEntity<ReservationResponseDTO> cancelReservation(@PathVariable Long idReservation) {
+        Reservation canceledReservation = reservationService.cancelReservation(idReservation);
+        ReservationResponseDTO responseDTO = ReservationMapper.toReservationResponseDTO(canceledReservation);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
 }

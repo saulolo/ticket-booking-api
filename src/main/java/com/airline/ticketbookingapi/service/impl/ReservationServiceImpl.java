@@ -100,4 +100,30 @@ public class ReservationServiceImpl implements IReservationService {
         return reservationRepository.save(existingReservation);
     }
 
+    /**
+     * Cancela una reserva por su ID.
+     * <p>
+     * Este método busca una reserva y actualiza su estado a 'cancelada'.
+     *
+     * @param idReservation El ID de la reserva a cancelar.
+     * @return La entidad de la reserva cancelada.
+     */
+    @Override
+    public Reservation cancelReservation(Long idReservation) {
+        LOGGER.info("Cancelando reserva con ID: {}", idReservation);
+
+        Optional<Reservation> reservationOptional = reservationRepository.findById(idReservation);
+
+        if (reservationOptional.isEmpty()) {
+            LOGGER.error("Reserva no encontrada con ID: {}", idReservation);
+            // TODO: Lanzar una excepción personalizada
+            return null;
+        }
+        Reservation reservationToCancel = reservationOptional.get();
+
+        reservationToCancel.setCancelled(true);
+
+        return reservationRepository.save(reservationToCancel);
+    }
+
 }

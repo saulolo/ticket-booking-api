@@ -33,6 +33,9 @@ public class Reservation implements Serializable {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     LocalDateTime createdDate;
 
+    @Column(name = "is_cancelled", nullable = false, columnDefinition = " boleano predeterminado de FALSE")
+    private boolean isCancelled;
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", nullable = false, foreignKey = @ForeignKey(name = "fk_reservation_to_user"))
     User user;
