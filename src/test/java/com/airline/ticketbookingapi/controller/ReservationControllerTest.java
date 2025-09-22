@@ -48,17 +48,23 @@ class ReservationControllerTest {
         ReservationRequestDTO requestDTO = new ReservationRequestDTO(1L, 1L, "Descripción de la reserva");
         LocalDateTime createdDate = LocalDateTime.parse("21/09/2025 22:00:00", DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
         Reservation createdReservation = new Reservation(1L, "RES-1234", "Descripción de la reserva", createdDate, false, null, null);
+        ReservationResponseDTO responseDTO = ReservationMapper.toReservationResponseDTO(createdReservation);
 
         // 2. Definición del comportamiento de los Mocks
         when(reservationService.createOrUpdateReservation(any(ReservationRequestDTO.class))).thenReturn(createdReservation);
+        // Aseguramos que el mapper mockeado retorne la respuesta DTO correcta.
+        when(reservationMapper.toReservationResponseDTO(any(Reservation.class))).thenReturn(responseDTO);
 
         // 3. Ejecutar la solicitud simulada y validar el resultado
         mockMvc.perform(post("/api/v1/reservations/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isCreated()) // Espera un estado HTTP 201 (Created)
-                .andExpect(jsonPath("$.idReservation").value(1L)) // Valida el ID en la respuesta JSON
-                .andExpect(jsonPath("$.reservationCode").value("RES-1234")) // Valida el código de reserva
-                .andExpect(jsonPath("$.description").value("Descripción de la reserva")); // Valida la descripción
+                // Valida la nueva estructura de la respuesta
+                .andExpect(jsonPath("$.data.idReservation").value(1L))
+                .andExpect(jsonPath("$.data.reservationCode").value("RES-1234"))
+                .andExpect(jsonPath("$.data.description").value("Descripción de la reserva"))
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.message").value("Reserva creada exitosamente."));
     }
 }

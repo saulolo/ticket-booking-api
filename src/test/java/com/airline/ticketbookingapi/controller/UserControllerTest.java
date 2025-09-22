@@ -44,10 +44,9 @@ class UserControllerTest {
     private UserMapper userMapper;
 
 
-
     @Test
     void testCreateUser() throws Exception {
-        //Given: Prepara los datos de prueba y define el comportamiento de los mocks.
+        // Given: Prepara los datos de prueba y define el comportamiento de los mocks.
         UserRequestDTO requestDTO = UserRequestDTO.builder()
                 .name("Test name")
                 .description("Test description")
@@ -75,16 +74,19 @@ class UserControllerTest {
 
             when(userService.saveOrUpdateUser(any(User.class))).thenReturn(newUser);
 
-            //Ejecuta la solicitud simulada al endpoint.
+            // Ejecuta la solicitud simulada al endpoint.
             mockMvc.perform(post("/api/v1/users/create")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(requestDTO)))
 
                     // Then: Valida el resultado de la solicitud.
                     .andExpect(status().isCreated()) // Espera un estado HTTP 201 (Created)
-                    .andExpect(jsonPath("$.idUser").value(1L))
-                    .andExpect(jsonPath("$.name").value("Test name"))
-                    .andExpect(jsonPath("$.description").value("Test description"));
+                    // Aquí es donde necesitas cambiar la ruta del JSON:
+                    .andExpect(jsonPath("$.data.idUser").value(1L))
+                    .andExpect(jsonPath("$.data.name").value("Test name"))
+                    .andExpect(jsonPath("$.data.description").value("Test description"))
+                    .andExpect(jsonPath("$.status").value("success"))
+                    .andExpect(jsonPath("$.message").value("Usuario creado exitosamente."));
         }
     }
 }
