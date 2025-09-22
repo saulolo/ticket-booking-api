@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,10 +24,16 @@ public class Ticket implements Serializable {
     @Column(name = "id_ticket")
     Long idTicket;
 
-    @Column(name = "name", nullable = false, length = 30)
-    String name;
+    @Column(name = "seat_number", nullable = false, length = 10)
+    String seatNumber;
 
-    @Column(name = "description", nullable = false, length = 100)
+    @Column(name = "price", nullable = false)
+    BigDecimal price;
+
+    @Column(name = "is_available", nullable = false)
+    Boolean isAvailable;
+
+    @Column(name = "description", length = 100)
     String description;
 
     @Column(name = "created_date", nullable = false)
@@ -36,5 +43,4 @@ public class Ticket implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_flight", nullable = false)
     Flight flight;
-
 }
