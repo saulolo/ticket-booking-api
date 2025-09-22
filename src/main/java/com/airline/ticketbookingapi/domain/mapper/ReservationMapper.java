@@ -1,16 +1,13 @@
 package com.airline.ticketbookingapi.domain.mapper;
 
 import com.airline.ticketbookingapi.domain.dto.request.ReservationRequestDTO;
-import com.airline.ticketbookingapi.domain.dto.response.FlightResponseDTO;
 import com.airline.ticketbookingapi.domain.dto.response.ReservationResponseDTO;
-import com.airline.ticketbookingapi.domain.entity.Flight;
 import com.airline.ticketbookingapi.domain.entity.Reservation;
 import com.airline.ticketbookingapi.domain.entity.Ticket;
 import com.airline.ticketbookingapi.domain.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Clase utilitaria para el mapeo entre la entidad Reservation y los DTOs.
