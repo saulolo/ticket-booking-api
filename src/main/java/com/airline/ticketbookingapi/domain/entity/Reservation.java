@@ -1,6 +1,7 @@
 package com.airline.ticketbookingapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -38,9 +39,11 @@ public class Reservation implements Serializable {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", nullable = false, foreignKey = @ForeignKey(name = "fk_reservation_to_user"))
+    @JsonIgnore
     User user;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_ticket", nullable = false, foreignKey = @ForeignKey(name = "fk_reservation_to_ticket"))
+    @JsonIgnore
     Ticket ticket;
 }

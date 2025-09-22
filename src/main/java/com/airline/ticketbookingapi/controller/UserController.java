@@ -1,6 +1,7 @@
 package com.airline.ticketbookingapi.controller;
 
 import com.airline.ticketbookingapi.domain.dto.request.UserRequestDTO;
+import com.airline.ticketbookingapi.domain.dto.response.ApiResponseDTO;
 import com.airline.ticketbookingapi.domain.dto.response.UserResponseDTO;
 import com.airline.ticketbookingapi.domain.entity.User;
 import com.airline.ticketbookingapi.domain.mapper.UserMapper;
@@ -9,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URISyntaxException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,14 +28,18 @@ public class UserController {
      * Crea un nuevo usuario.
      *
      * @param userRequestDTO El DTO con los datos del usuario a crear.
-     * @return ResponseEntity con el DTO del usuario creado y un estado HTTP 201 Created.
+     * @return ResponseEntity con la estructura estandarizada de la API, un estado HTTP 201 Created y los datos del usuario creado.
      */
     @PostMapping("/create")
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) throws URISyntaxException {
+    public ResponseEntity<ApiResponseDTO<UserResponseDTO>> createUser(@RequestBody UserRequestDTO userRequestDTO) {
         User newUser = UserMapper.toUserEntity(userRequestDTO);
-        User createUser = userService.saveOrUpdateUser(newUser);
-        UserResponseDTO userResponseDTO = UserMapper.toUserResponseDTO(createUser);
-        return new ResponseEntity<>(userResponseDTO, HttpStatus.CREATED);
+        User createdUser = userService.saveOrUpdateUser(newUser);
+        UserResponseDTO userResponseDTO = UserMapper.toUserResponseDTO(createdUser);
+
+        return new ResponseEntity<>(
+                new ApiResponseDTO<>(userResponseDTO, "success", "Usuario creado exitosamente."),
+                HttpStatus.CREATED
+        );
     }
 
     /**
@@ -44,59 +47,78 @@ public class UserController {
      *
      * @param id             El ID del usuario a actualizar.
      * @param userRequestDTO El DTO con los nuevos datos.
-     * @return ResponseEntity con el DTO del usuario actualizado y un estado HTTP 200 OK.
+     * @return ResponseEntity con la estructura estandarizada de la API, un estado HTTP 200 OK y los datos del usuario actualizado. Retorna 404 Not Found si no existe.
      */
     @PutMapping("/update/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
+    public ResponseEntity<ApiResponseDTO<UserResponseDTO>> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
         Optional<User> userOptional = userService.findUserById(id);
 
         if (userOptional.isPresent()) {
             User existingUser = userOptional.get();
             existingUser.setName(userRequestDTO.name());
             existingUser.setDescription(userRequestDTO.description());
-            existingUser.setCreatedDate(LocalDateTime.now());
+
             User updatedUser = userService.saveOrUpdateUser(existingUser);
             UserResponseDTO userResponseDTO = UserMapper.toUserResponseDTO(updatedUser);
-            return ResponseEntity.ok(userResponseDTO);
+
+            return new ResponseEntity<>(
+                    new ApiResponseDTO<>(userResponseDTO, "success", "Usuario actualizado exitosamente."),
+                    HttpStatus.OK
+            );
         }
-        return ResponseEntity.notFound().build();
+        return new ResponseEntity<>(
+                new ApiResponseDTO<>(null, "error", "Usuario no encontrado."),
+                HttpStatus.NOT_FOUND
+        );
     }
 
     /**
      * Busca un usuario por su ID.
      *
      * @param id El ID del usuario a buscar.
-     * @return ResponseEntity con el DTO del usuario y un estado HTTP 200 OK, o 404 Not Found si no existe.
+     * @return ResponseEntity con la estructura estandarizada de la API, un estado HTTP 200 OK y los datos del usuario. Retorna 404 Not Found si no existe.
      */
     @GetMapping("/find/{id}")
-    public ResponseEntity<UserResponseDTO> findUserById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponseDTO<UserResponseDTO>> findUserById(@PathVariable Long id) {
         Optional<User> userOptional = userService.findUserById(id);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             UserResponseDTO userResponseDTO = UserMapper.toUserResponseDTO(user);
-            return ResponseEntity.ok(userResponseDTO);
+            return new ResponseEntity<>(
+                    new ApiResponseDTO<>(userResponseDTO, "success", "Usuario encontrado exitosamente."),
+                    HttpStatus.OK
+            );
         } else {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(
+                    new ApiResponseDTO<>(null, "error", "Usuario no encontrado."),
+                    HttpStatus.NOT_FOUND
+            );
         }
     }
 
     /**
      * Busca todos los usuarios.
      *
-     * @return ResponseEntity con una lista de DTOs de usuarios y estado HTTP 200 OK, o 204 No Content si la lista está vacía.
+     * @return ResponseEntity con la estructura estandarizada de la API, un estado HTTP 200 OK y una lista de usuarios. Retorna un mensaje informativo si la lista está vacía.
      */
     @GetMapping("/findAll")
-    public ResponseEntity<List<UserResponseDTO>> findAllUsers() {
+    public ResponseEntity<ApiResponseDTO<List<UserResponseDTO>>> findAllUsers() {
         List<User> users = userService.findAllUsers();
 
         if (users.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return new ResponseEntity<>(
+                    new ApiResponseDTO<>(null, "success", "No se encontraron usuarios."),
+                    HttpStatus.OK
+            );
         } else {
             List<UserResponseDTO> userResponseDTOS = users.stream()
                     .map(UserMapper::toUserResponseDTO)
                     .toList();
-            return ResponseEntity.ok(userResponseDTOS);
+            return new ResponseEntity<>(
+                    new ApiResponseDTO<>(userResponseDTOS, "success", "Usuarios encontrados exitosamente."),
+                    HttpStatus.OK
+            );
         }
     }
 
@@ -104,17 +126,23 @@ public class UserController {
      * Elimina un usuario por su ID.
      *
      * @param id El ID del usuario a eliminar.
-     * @return ResponseEntity con un estado HTTP 204 No Content si se elimina, o 404 Not Found si no existe.
+     * @return ResponseEntity con la estructura estandarizada de la API, un estado HTTP 200 OK y un mensaje de éxito. Retorna 404 Not Found si no existe.
      */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponseDTO<Void>> deleteById(@PathVariable Long id) {
         Optional<User> existingUser = userService.findUserById(id);
 
         if (existingUser.isPresent()) {
             userService.deleteUserById(id);
-            return ResponseEntity.noContent().build();
+            return new ResponseEntity<>(
+                    new ApiResponseDTO<>(null, "success", "Usuario eliminado exitosamente."),
+                    HttpStatus.OK
+            );
         } else {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(
+                    new ApiResponseDTO<>(null, "error", "Usuario no encontrado."),
+                    HttpStatus.NOT_FOUND
+            );
         }
     }
 

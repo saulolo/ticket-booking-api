@@ -2,6 +2,7 @@ package com.airline.ticketbookingapi.controller;
 
 import com.airline.ticketbookingapi.domain.dto.request.ReservationRequestDTO;
 import com.airline.ticketbookingapi.domain.dto.request.ReservationUpdateRequestDTO;
+import com.airline.ticketbookingapi.domain.dto.response.ApiResponseDTO;
 import com.airline.ticketbookingapi.domain.dto.response.ReservationResponseDTO;
 import com.airline.ticketbookingapi.domain.entity.Reservation;
 import com.airline.ticketbookingapi.domain.mapper.ReservationMapper;
@@ -27,27 +28,35 @@ public class ReservationController {
      * Crea una nueva reserva para un usuario y un tiquete.
      *
      * @param reservationRequestDTO El DTO de solicitud con los datos de la reserva.
-     * @return El DTO de respuesta con la reserva creada y un estado HTTP 201 Created.
+     * @return ResponseEntity con la estructura estandarizada de la API, un estado HTTP 201 Created y los datos de la reserva creada.
      */
     @PostMapping("/create")
-    public ResponseEntity<ReservationResponseDTO> createReservation(@RequestBody ReservationRequestDTO reservationRequestDTO) {
+    public ResponseEntity<ApiResponseDTO<ReservationResponseDTO>> createReservation(@RequestBody ReservationRequestDTO reservationRequestDTO) {
         Reservation newReservation = reservationService.createOrUpdateReservation(reservationRequestDTO);
         ReservationResponseDTO reservationResponseDTO = ReservationMapper.toReservationResponseDTO(newReservation);
-        return new ResponseEntity<>(reservationResponseDTO, HttpStatus.CREATED);
+
+        return new ResponseEntity<>(
+                new ApiResponseDTO<>(reservationResponseDTO, "success", "Reserva creada exitosamente."),
+                HttpStatus.CREATED
+        );
     }
 
 
     /**
      * Actualiza una reserva existente.
      *
-     * @param requestDTO DTO con los datos de la reserva a actualizar.
-     * @return El DTO de respuesta de la reserva actualizada.
+     * @param requestDTO El DTO con los datos de la reserva a actualizar.
+     * @return ResponseEntity con la estructura estandarizada de la API, un estado HTTP 200 OK y los datos de la reserva actualizada.
      */
     @PutMapping("/update")
-    public ResponseEntity<ReservationResponseDTO> updateReservation(@RequestBody ReservationUpdateRequestDTO requestDTO) {
+    public ResponseEntity<ApiResponseDTO<ReservationResponseDTO>> updateReservation(@RequestBody ReservationUpdateRequestDTO requestDTO) {
         Reservation updatedReservation = reservationService.updateReservation(requestDTO);
         ReservationResponseDTO responseDTO = ReservationMapper.toReservationResponseDTO(updatedReservation);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        return new ResponseEntity<>(
+                new ApiResponseDTO<>(responseDTO, "success", "Reserva actualizada exitosamente."),
+                HttpStatus.OK
+        );
     }
 
 
@@ -55,13 +64,16 @@ public class ReservationController {
      * Cancela una reserva por su ID.
      *
      * @param idReservation El ID de la reserva a cancelar.
-     * @return La entidad de la reserva cancelada.
+     * @return ResponseEntity con la estructura estandarizada de la API, un estado HTTP 200 OK y los datos de la reserva cancelada.
      */
     @DeleteMapping("/delete/{idReservation}")
-    public ResponseEntity<ReservationResponseDTO> cancelReservation(@PathVariable Long idReservation) {
+    public ResponseEntity<ApiResponseDTO<ReservationResponseDTO>> cancelReservation(@PathVariable Long idReservation) {
         Reservation canceledReservation = reservationService.cancelReservation(idReservation);
         ReservationResponseDTO responseDTO = ReservationMapper.toReservationResponseDTO(canceledReservation);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-    }
 
+        return new ResponseEntity<>(
+                new ApiResponseDTO<>(responseDTO, "success", "Reserva cancelada exitosamente."),
+                HttpStatus.OK
+        );
+    }
 }

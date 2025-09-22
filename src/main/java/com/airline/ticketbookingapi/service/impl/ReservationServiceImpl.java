@@ -7,6 +7,8 @@ import com.airline.ticketbookingapi.domain.entity.Reservation;
 import com.airline.ticketbookingapi.domain.entity.Ticket;
 import com.airline.ticketbookingapi.domain.entity.User;
 import com.airline.ticketbookingapi.domain.mapper.ReservationMapper;
+import com.airline.ticketbookingapi.exception.TicketNotFoundException;
+import com.airline.ticketbookingapi.exception.UserNotFoundException;
 import com.airline.ticketbookingapi.repository.FlightRepository;
 import com.airline.ticketbookingapi.repository.ReservationRepository;
 import com.airline.ticketbookingapi.repository.TicketRepository;
@@ -49,12 +51,15 @@ public class ReservationServiceImpl implements IReservationService {
     public Reservation createOrUpdateReservation(ReservationRequestDTO reservationRequestDTO) {
 
         Optional<User> userOptional = userRepository.findById(reservationRequestDTO.idUser());
-        Optional<Ticket> ticketOptional = ticketRepository.findById(reservationRequestDTO.idTicket());
+        if (userOptional.isEmpty()) {
+            LOGGER.error("Usuario no encontrado con ID: {}", reservationRequestDTO.idUser());
+            throw new UserNotFoundException("Usuario no encontrado con ID: " + reservationRequestDTO.idUser());
+        }
 
-        if (userOptional.isEmpty() || ticketOptional.isEmpty()) {
-            LOGGER.error("Usuario o tiquete no encontrado. No se puede crear la reserva.");
-            //TODO: Lanzar una excepción personalizada
-            return null;
+        Optional<Ticket> ticketOptional = ticketRepository.findById(reservationRequestDTO.idTicket());
+        if (ticketOptional.isEmpty()) {
+            LOGGER.error("Tiquete no encontrado con ID: {}", reservationRequestDTO.idTicket());
+            throw new TicketNotFoundException("Tiquete no encontrado con ID: " + reservationRequestDTO.idTicket());
         }
 
         User user = userOptional.get();

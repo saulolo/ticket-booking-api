@@ -1,6 +1,7 @@
 package com.airline.ticketbookingapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -46,6 +47,7 @@ public class Flight implements Serializable {
     LocalDateTime createdDate;
 
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIgnore
     List<Ticket> tickets;
 
 }
