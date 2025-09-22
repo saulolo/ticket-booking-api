@@ -6,6 +6,7 @@ import com.airline.ticketbookingapi.service.interfaces.IFlightService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class FlightServiceImpl implements IFlightService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
     public List<Flight> findFlightsByOriginAndDestination(String origin, String destination) {
         LOGGER.info("Buscando vuelos de: {} a {}. " , origin, destination);
         return flightRepository.findByOriginAndDestination(origin, destination);

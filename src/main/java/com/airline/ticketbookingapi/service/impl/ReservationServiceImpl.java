@@ -17,6 +17,7 @@ import com.airline.ticketbookingapi.service.interfaces.IReservationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -48,6 +49,7 @@ public class ReservationServiceImpl implements IReservationService {
      * @return La entidad de la reserva guardada.
      */
     @Override
+    @Transactional
     public Reservation createOrUpdateReservation(ReservationRequestDTO reservationRequestDTO) {
 
         Optional<User> userOptional = userRepository.findById(reservationRequestDTO.idUser());
@@ -80,6 +82,7 @@ public class ReservationServiceImpl implements IReservationService {
      * @return La entidad de la reserva actualizada.
      */
     @Override
+    @Transactional
     public Reservation updateReservation(ReservationUpdateRequestDTO reservationUpdateRequestDTO) {
         LOGGER.info("Actualizando reserva con ID: {}", reservationUpdateRequestDTO.idReservation());
         Optional<Reservation> reservationOptional = reservationRepository.findById(reservationUpdateRequestDTO.idReservation());
@@ -114,6 +117,7 @@ public class ReservationServiceImpl implements IReservationService {
      * @return La entidad de la reserva cancelada.
      */
     @Override
+    @Transactional
     public Reservation cancelReservation(Long idReservation) {
         LOGGER.info("Cancelando reserva con ID: {}", idReservation);
 

@@ -6,6 +6,7 @@ import com.airline.ticketbookingapi.service.interfaces.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements IUserService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
@@ -33,6 +35,7 @@ public class UserServiceImpl implements IUserService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> findUserById(Long id) {
         return userRepository.findById(id);
     }
@@ -41,6 +44,7 @@ public class UserServiceImpl implements IUserService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public User saveOrUpdateUser(User user) {
         LOGGER.info("Creado o actualizado un Usuario. ✓ ");
         return userRepository.save(user);
@@ -50,6 +54,7 @@ public class UserServiceImpl implements IUserService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
         LOGGER.info("Usuario elimnado con exito. ✓ ");
