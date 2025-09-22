@@ -8,7 +8,6 @@ import com.airline.ticketbookingapi.domain.entity.Reservation;
 import com.airline.ticketbookingapi.domain.mapper.ReservationMapper;
 import com.airline.ticketbookingapi.service.interfaces.IReservationService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
