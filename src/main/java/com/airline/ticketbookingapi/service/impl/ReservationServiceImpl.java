@@ -1,10 +1,13 @@
 package com.airline.ticketbookingapi.service.impl;
 
 import com.airline.ticketbookingapi.domain.dto.request.ReservationRequestDTO;
+import com.airline.ticketbookingapi.domain.dto.request.ReservationUpdateRequestDTO;
+import com.airline.ticketbookingapi.domain.entity.Flight;
 import com.airline.ticketbookingapi.domain.entity.Reservation;
 import com.airline.ticketbookingapi.domain.entity.Ticket;
 import com.airline.ticketbookingapi.domain.entity.User;
 import com.airline.ticketbookingapi.domain.mapper.ReservationMapper;
+import com.airline.ticketbookingapi.repository.FlightRepository;
 import com.airline.ticketbookingapi.repository.ReservationRepository;
 import com.airline.ticketbookingapi.repository.TicketRepository;
 import com.airline.ticketbookingapi.repository.UserRepository;
@@ -22,11 +25,14 @@ public class ReservationServiceImpl implements IReservationService {
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
+    private final FlightRepository flightRepository;
 
-    public ReservationServiceImpl(ReservationRepository reservationRepository, UserRepository userRepository, TicketRepository ticketRepository) {
+
+    public ReservationServiceImpl(ReservationRepository reservationRepository, UserRepository userRepository, TicketRepository ticketRepository, FlightRepository flightRepository) {
         this.reservationRepository = reservationRepository;
         this.userRepository = userRepository;
         this.ticketRepository = ticketRepository;
+        this.flightRepository = flightRepository;
     }
 
 
@@ -58,4 +64,40 @@ public class ReservationServiceImpl implements IReservationService {
 
         return reservationRepository.save(reservation);
     }
+
+    /**
+     * Actualiza una reserva existente con los datos del DTO.
+     * <p>
+     * Este método busca la reserva por su ID, actualiza la descripción y, si se proporciona,
+     * la fecha de salida del vuelo asociado.
+     *
+     * @param reservationUpdateRequestDTO DTO con los datos de la reserva a actualizar.
+     * @return La entidad de la reserva actualizada.
+     */
+    @Override
+    public Reservation updateReservation(ReservationUpdateRequestDTO reservationUpdateRequestDTO) {
+        LOGGER.info("Actualizando reserva con ID: {}", reservationUpdateRequestDTO.idReservation());
+        Optional<Reservation> reservationOptional = reservationRepository.findById(reservationUpdateRequestDTO.idReservation());
+
+        if (reservationOptional.isEmpty()) {
+            LOGGER.error("Reserva no encontrada con ID: {}", reservationUpdateRequestDTO.idReservation());
+            // TODO: Lanzar una excepción personalizada
+            return null;
+        }
+
+        Reservation existingReservation = reservationOptional.get();
+
+        if (reservationUpdateRequestDTO.newDepartureTime() != null) {
+            Flight flight = existingReservation.getTicket().getFlight();
+            flight.setDepartureTime(reservationUpdateRequestDTO.newDepartureTime());
+            flightRepository.save(flight);
+        }
+
+        if (reservationUpdateRequestDTO.description() != null && !reservationUpdateRequestDTO.description().isBlank()) {
+            existingReservation.setDescription(reservationUpdateRequestDTO.description());
+        }
+
+        return reservationRepository.save(existingReservation);
+    }
+
 }
