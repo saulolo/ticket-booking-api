@@ -132,6 +132,7 @@
 				</executions>
 				<configuration>
 					<excludes>
+						<exclude>com/airline/ticketbookingapi/TicketBookingApplication.class</exclude>
 						<exclude>com/airline/ticketbookingapi/domain/dto/**</exclude>
 						<exclude>com/airline/ticketbookingapi/domain/entity/**</exclude>
 						<exclude>com/airline/ticketbookingapi/domain/mapper/**</exclude>
