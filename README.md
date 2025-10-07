@@ -98,7 +98,7 @@ La API estará disponible en la ruta base `/airline`, por ejemplo: `http://local
 - Este proyecto incluye un archivo SQL que crea la base de datos y las tablas necesarias para registros de la APP.
 
 📄 **Archivos incluido:**  
-- `src/main/resources/DB/script.sql`
+- `src/main/resources/DB/01_Tables.sql`
 
 📌 **Instrucciones para ejecutarlo desde DBeaver (PostgreSQL):**
 
@@ -107,7 +107,7 @@ La API estará disponible en la ruta base `/airline`, por ejemplo: `http://local
 - Haz clic derecho sobre el servidor > **Create > Database**
 - Nómbrala: `bd_ticket_booking_ias`
 3. Haz clic derecho sobre la nueva base de datos > **SQL Editor > Open SQL Script**
-4. Copia y pega el contenido del archivo `script.sql` o ábrelo desde el explorador con `File > Open File`.
+4. Copia y pega el contenido del archivo `01_Tables.sql` o ábrelo desde el explorador con `File > Open File`.
 5. Ejecuta el script completo haciendo clic en el botón ▶️ o presionando `Ctrl + Enter`.
 
 📝 **Ejemplo del contenido del archivo `.sql`:**

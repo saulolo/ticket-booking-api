@@ -32,7 +32,7 @@ public class Ticket implements Serializable {
     BigDecimal price;
 
     @Column(name = "is_available", nullable = false)
-    Boolean isAvailable;
+    Boolean isAvailable = Boolean.TRUE;;
 
     @Column(name = "description", length = 100)
     String description;
@@ -45,4 +45,8 @@ public class Ticket implements Serializable {
     @JoinColumn(name = "id_flight", nullable = false)
     @JsonIgnore
     Flight flight;
+
+    @OneToOne(mappedBy = "ticket", fetch = FetchType.LAZY)
+    @JsonIgnore
+    Reservation reservation;
 }
